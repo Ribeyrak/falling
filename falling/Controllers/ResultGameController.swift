@@ -11,8 +11,10 @@ import WebKit
 class ResultGameController: UIViewController, WKUIDelegate {
 
     var wView: WKWebView!
-    var link = "https://www.google.com/"
+    var link: String!
+    weak var delegate: GameRestartDelegate?
     
+    // MARK: - Lifecycle
     override func loadView() {
         let webConfiguration = WKWebViewConfiguration()
         wView = WKWebView(frame: .zero, configuration: webConfiguration)
@@ -23,15 +25,20 @@ class ResultGameController: UIViewController, WKUIDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         let myURL = URL(string: link)
         let myRequest = URLRequest(url: myURL!)
         wView.load(myRequest)
+        navigationController?.setNavigationBarHidden(false, animated: false)
+        setupNavigationBar()
+    }
+
+    // MARK: - Setup navigation
+    private func setupNavigationBar() {
+        let restartButton = UIBarButtonItem(title: "Restart game", style: .plain, target: self, action: #selector(restartGame))
+        self.navigationItem.leftBarButtonItem = restartButton
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        navigationController?.setNavigationBarHidden(true, animated: false)
+    @objc private func restartGame() {
+        delegate?.restartGame()
     }
 }

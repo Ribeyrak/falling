@@ -6,3 +6,15 @@
 //
 
 import Foundation
+
+enum R {
+    enum GameResult {
+        static let winner = "winner"
+        static let loser = "loser"
+    }
+}
+
+enum PlatformType {
+    case red
+    case green
+}

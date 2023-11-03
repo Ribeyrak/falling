@@ -6,3 +6,11 @@
 //
 
 import Foundation
+
+protocol GameSceneDelegate: AnyObject {
+    func gameDidEnd(winner: Bool)
+}
+
+protocol GameRestartDelegate: AnyObject {
+    func restartGame()
+}
