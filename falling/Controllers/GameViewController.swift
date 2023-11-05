@@ -37,6 +37,10 @@ class GameViewController: UIViewController {
         animationToScreen()
         navigationController?.isNavigationBarHidden = true
     }
+    
+    override func loadView() {
+        self.view = SKView()
+    }
 
     // MARK: - Private func
     private func setupUI() {
@@ -76,7 +80,7 @@ class GameViewController: UIViewController {
     
     private func animationToScreen() {
         DBManager.shared.preloadData {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 self.bg.isHidden = true
                 self.startBtn.isHidden = false
             }
@@ -113,7 +117,6 @@ class GameViewController: UIViewController {
 extension GameViewController: GameSceneDelegate {
     func gameDidEnd(winner: Bool) {
         let resultIdentifier = winner ? R.GameResult.winner : R.GameResult.loser
-        print(resultIdentifier)
         let result = DBManager.shared.preloadedData[resultIdentifier]
         DispatchQueue.main.async {
             if let navigationController = self.navigationController {

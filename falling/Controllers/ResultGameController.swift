@@ -15,24 +15,42 @@ class ResultGameController: UIViewController, WKUIDelegate {
     weak var delegate: GameRestartDelegate?
     
     // MARK: - Lifecycle
-    override func loadView() {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .systemBackground
+        navigationController?.setNavigationBarHidden(false, animated: false)
+        setupWebView()
+        setupNavigationBar()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: false)
+    }
+    
+    // MARK: - Private func
+    private func setupWebView() {
         let webConfiguration = WKWebViewConfiguration()
         wView = WKWebView(frame: .zero, configuration: webConfiguration)
         wView.uiDelegate = self
-        wView.allowsBackForwardNavigationGestures = true
-        view = wView
+        wView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(wView)
+        
+        guard let urlString = link, let url = URL(string: urlString) else {
+            print("Invalid URL string.")
+            return
+        }
+        let request = URLRequest(url: url)
+        wView.load(request)
+        
+        NSLayoutConstraint.activate([
+            wView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            wView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            wView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            wView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        let myURL = URL(string: link)
-        let myRequest = URLRequest(url: myURL!)
-        wView.load(myRequest)
-        navigationController?.setNavigationBarHidden(false, animated: false)
-        setupNavigationBar()
-    }
-
-    // MARK: - Setup navigation
+    
     private func setupNavigationBar() {
         let restartButton = UIBarButtonItem(title: "Restart game", style: .plain, target: self, action: #selector(restartGame))
         self.navigationItem.leftBarButtonItem = restartButton
